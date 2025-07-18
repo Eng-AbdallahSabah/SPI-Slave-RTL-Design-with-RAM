@@ -1,106 +1,161 @@
-# spi-slave-rtl-
-A Verilog implementation of a Serial Peripheral Interface (SPI) slave with integrated 256-byte RAM, featuring a 5-state FSM architecture supporting multiple operation modes, 10-bit command/data protocol, and synchronous interface with comprehensive verification testbenches for embedded system communication applications.
-SPI Memory Interface Controller
-A complete Verilog implementation of a Serial Peripheral Interface (SPI) slave with integrated RAM for embedded system applications.
-Overview
-This project implements a memory-mapped SPI slave device that enables external masters to read from and write to an internal 256-byte RAM. The design uses a state machine architecture to efficiently handle the SPI protocol while maintaining a clean separation between communication and memory modules.
-Features
+# SPI-Slave-RTL-Design-with-RAM
 
-Complete SPI Slave Interface
+This project implements a synthesizable **SPI (Serial Peripheral Interface) Slave Controller** connected to a **Single-Port RAM**, using **Verilog HDL**. The design is fully modular and leverages a **Finite State Machine (FSM)** to handle SPI protocol communication and data memory transactions. This project was developed as part of an academic assignment in the field of digital design and verification.
 
-MOSI, MISO, and SS_n signal handling
-Synchronous design with clock and reset
-Bit-level serial communication
+---
 
+## 📁 Directory Structure
+SPI-Slave-RTL-Design-with-RAM/
+├── rtl/ # RTL design files (SPI Slave, RAM, top module)
+│ ├── spi_slave.v
+│ ├── ram.v
+│ └── top.v
+├── tb/ # Testbench files
+│ └── spi_tb.v
+├── constraints/ # Xilinx FPGA constraint files
+│ └── Constraints_project.xdc
+├── images/ # Simulation waveform screenshots
+│ └── waveform.png
+├── run.do # QuestaSim simulation script
+├── README.md # Project documentation
 
-10-bit Communication Protocol
+---
 
-2-bit command field
-8-bit data/address field
+## 🧠 Project Overview
 
+- **Protocol Used**: SPI (Mode 0 – CPOL = 0, CPHA = 0)
+- **Purpose**: Enable serial data communication and storage using SPI and RAM
+- **Architecture**: RTL-based SPI Slave module with memory-mapped RAM access
+- **Controller Logic**: FSM implementing three states – `IDLE`, `RECEIVE`, and `WRITE`
+- **Technology Target**: Xilinx FPGA (Vivado .xdc constraints provided for implementation)
+- **Communication**: Master-Slave SPI interface using MOSI, MISO, SCLK, and SS lines
 
-Four Operation Modes
+---
 
-Hold Write Address (00)
-Write Operation (01)
-Hold Read Address (10)
-Read Operation (11)
+## 📐 Design Modules
 
+### 1. `spi_slave.v`
+- Manages SPI communication (bit-shifting, clock edge detection)
+- Receives commands and data over MOSI
+- Controls when to read from or write to RAM
+- Communicates with FSM for flow control
 
-Integrated Memory
+### 2. `ram.v`
+- Implements single-port RAM
+- Synchronous read and write support
+- Parameterized depth and width for flexibility
 
-256-byte RAM with 8-bit data width
-Full addressing capability
-Synchronous read/write operations
+### 3. `top.v`
+- Integrates `spi_slave` and `ram`
+- Handles signal routing between modules
+- Exposes SPI interface to the top-level design
 
+### 4. `Constraints_project.xdc`
+- Xilinx Design Constraints (.xdc)
+- Maps SPI signals (MOSI, MISO, SCLK, SS) and optional clock/reset to FPGA pins
 
+---
 
-Architecture
-The design consists of three main modules:
+## 🔬 Testbench & Simulation
 
-SPI Slave Module
+- **Testbench File**: `spi_tb.v`
+- Validates multiple SPI operations: write and read to/from RAM
+- Generates SPI clock and simulates timing behavior accurately
+- Verifies FSM transitions and RAM responses
+- Generates `.wlf` waveform file viewable in QuestaSim
 
-State machine with 5 states (IDLE, CHK_CMD, WRITE, READ_ADD, READ_DATA)
-Serial-to-parallel and parallel-to-serial conversion
-Command decoding and operation control
+### Simulation Script
+- File: `run.do`
+- Automates compilation, simulation, and waveform generation using QuestaSim
+- To use:
+  1. Open QuestaSim
+  2. Navigate to project folder
+  3. Run: `do run.do`
 
+---
 
-RAM Module
+## 📷 Example Simulation Waveform
 
-256-byte memory array
-Address register for operation sequencing
-Data output register with valid signal
+Below is a waveform image demonstrating a complete SPI transaction:
+- **Write Operation** to RAM address
+- **Read Operation** from same RAM address
+- Confirmed via MISO response
 
+![SPI Waveform Example](images/waveform.png)
 
-Wrapper Module
+> Make sure `waveform.png` exists in `/images/` directory before pushing to GitHub.
 
-Connects SPI slave interface to RAM module
-Signal routing and interconnection
-Creates a complete memory-mapped SPI device
+---
 
+## ✅ Key Features
 
+- Fully modular, readable RTL design
+- FSM-based protocol handling
+- Supports RAM read/write via SPI interface
+- Easily synthesizable and FPGA-ready
+- Testbench provides full functional coverage for major use cases
+- Automation-ready simulation via `run.do`
 
-Directory Structure
-├── rtl/                # RTL design files
-│   ├── SPI.v           # SPI slave module
-│   ├── RAM.v           # Memory module
-│   └── Wrapper.v       # Integration wrapper
-├── testbench/          # Verification files
-│   ├── tb_Spi_Slave.v  # SPI module testbench
-│   └── tb_Wrapper.v    # Full system testbench
-└── simulation/         # Simulation scripts
-    ├── run.do          # ModelSim script for wrapper
-    └── run1.do         # ModelSim script for SPI slave
-Simulation
-To simulate the design:
+---
 
-Clone the repository
-Navigate to the simulation directory
-Run the appropriate simulation script:
-vsim -do run.do      # For full system simulation
-vsim -do run1.do     # For SPI slave module simulation
+## 🧰 Tools & Technologies Used
 
+| Tool         | Purpose                              |
+|--------------|---------------------------------------|
+| **Vivado**   | Synthesis, Implementation, Constraints |
+| **QuestaSim**| Functional Simulation, Waveform Debugging |
+| **Verilog HDL** | RTL Design and Testbench Development |
 
-Verification
-The design includes comprehensive verification:
+---
 
-Individual module testing with tb_Spi_Slave.v
-Full system verification with tb_Wrapper.v
-Testing of all operation modes and corner cases
-Error detection and handling verification
+## 🧪 Verification
 
-Usage Example
-The SPI slave can be integrated with any SPI master device. A typical transaction sequence:
+- **Test Coverage**: Functional testbench covers:
+  - Write command followed by data
+  - Read command returns expected data
+  - Idle SPI behavior when no SS signal
+  - Invalid commands (optional enhancement)
 
-Master pulls SS_n low to begin transaction
-Master sends Hold Write Address command (00) with target address
-Master sends Write Operation command (01) with data to write
-Master sends Hold Read Address command (10) with target address
-Master sends Read Operation command (11) to retrieve data
-Master pulls SS_n high to end transaction
+- **Waveform Inspection**: Use QuestaSim to inspect signals like:
+  - `sclk`, `mosi`, `miso`, `ss`
+  - Internal `fsm_state`
+  - RAM address/data ports
 
-Acknowledgments
+---
 
-Based on standard SPI protocol specifications
-Designed for FPGA implementation
-RetryClaude can make mistakes. Please double-check responses.
+## 📎 Implementation Notes
+
+- Ensure your FPGA board supports SPI I/O pins; map them in the `.xdc` file.
+- RAM parameters can be configured for different depths and data widths if needed.
+- `miso` line should be tri-stated or handled correctly if SPI master is external.
+- You can add `ILA` or `VIO` cores if debugging on real hardware.
+
+---
+
+## 🔄 Possible Enhancements (To-Do)
+
+- ✅ Add support for SPI Mode 1/2/3
+- ⬜ Implement configurable RAM size via parameters
+- ⬜ Add assertion-based verification (using SystemVerilog/SVA)
+- ⬜ Generate code coverage and synthesis reports (`doc/` folder)
+- ⬜ Display real-time SPI data on LEDs/7-seg (if mapped on FPGA board)
+- ⬜ Add write protection or error checking for unsupported operations
+
+---
+
+## 👨‍💻 Author
+
+**Eng. Abdallah Sabah**  
+Faculty of Engineering, Suez Canal University  
+Department of Electronics and Communications Engineering  
+Graduation Year: 2025  
+Email: (you can optionally include a professional email)
+
+---
+
+## 📜 License
+
+This project is released under an academic-use license.  
+You are free to fork, modify, and extend it for non-commercial purposes, provided that proper credit is given to the author.
+
+---
