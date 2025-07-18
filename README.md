@@ -81,7 +81,7 @@ Below is a waveform image demonstrating a complete SPI transaction:
 - **Read Operation** from same RAM address
 - Confirmed via MISO response
 
-![SPI Waveform Example](images/waveform.png)
+![SPI Waveform Example]([images/waveform.png](https://github.com/Eng-AbdallahSabah/SPI-Slave-RTL-Design-with-RAM/blob/main/images/Waveform))
 
 > Make sure `waveform.png` exists in `/images/` directory before pushing to GitHub.
 
