@@ -5,6 +5,7 @@ This project implements a synthesizable **SPI (Serial Peripheral Interface) Slav
 ---
 
 ## 📁 Directory Structure
+```
 SPI-Slave-RTL-Design-with-RAM/
 ├── rtl/ # RTL design files (SPI Slave, RAM, top module)
 │ ├── spi_slave.v
@@ -18,7 +19,7 @@ SPI-Slave-RTL-Design-with-RAM/
 │ └── waveform.png
 ├── run.do # QuestaSim simulation script
 ├── README.md # Project documentation
-
+```
 ---
 
 ## 🧠 Project Overview
